@@ -6,7 +6,7 @@ import typing as t
 from . import exceptions as e
 from .const import DEFAULT_BCAST_ADDR, DEFAULT_PORT, DEFAULT_TIMEOUT
 from .device import Device, scan
-from .hub import ehub
+from .remote import ehub
 from .sensor import motion, eths
 
 SUPPORTED_TYPES = {
