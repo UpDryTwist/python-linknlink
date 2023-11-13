@@ -4,6 +4,7 @@ import threading
 import random
 import time
 import typing as t
+import struct
 
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
@@ -330,3 +331,27 @@ class Device:
             )
 
         return resp
+
+    def build_cmdstu(self, cmd: int, payload: bytes = b"") -> bytes:
+        """Build a command to send."""
+        packet = bytearray(0x0C)
+        packet[0x00:0x04] = bytes.fromhex("a5a55a5a")
+        packet[0x06:0x08] = cmd.to_bytes(2, "little")
+        packet[0x08:0x10] = len(payload).to_bytes(2, "little")
+
+        p_checksum = sum(packet, 0xBEAF) & 0xFFFF
+        p_checksum = sum(payload, p_checksum) & 0xFFFF
+        packet[0x04:0x06] = p_checksum.to_bytes(2, "little")
+
+        return packet
+
+    def analysis_data(self, payload: bytes):
+        """Build a command to send."""
+        if payload[:4].hex() != "a5a55a5a":
+            return False
+        
+        # TODO checksum
+        
+        length = struct.unpack('<H', payload[0x08:0x0A])[0]
+
+        return True, length, payload[0x0C:length+0x0C]

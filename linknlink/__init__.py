@@ -36,7 +36,6 @@ def gendevice(
 
         except KeyError:
             continue
-
         return dev_cls(
             host,
             mac,
@@ -46,7 +45,6 @@ def gendevice(
             manufacturer=manufacturer,
             is_locked=is_locked,
         )
-
     return Device(host, mac, dev_type, name=name, is_locked=is_locked)
 
 
