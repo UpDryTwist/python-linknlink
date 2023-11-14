@@ -22,9 +22,9 @@ class ehub(Device):
         """Return the state of the sensors."""
         resp = self._send(0x24)
         return {
-            "temperature": resp[0x0] + resp[0x1] / 100.0,
-            "humidity": resp[0x2] + resp[0x3] / 100.0,
-            "pirDetected": resp[0x6],
+            "envtemp": resp[0x0] + resp[0x1] / 100.0,
+            "envhumid": resp[0x2] + resp[0x3] / 100.0,
+            "pir_detected": resp[0x6],
         }
 
     def check_temperature(self) -> float:

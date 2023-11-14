@@ -26,7 +26,11 @@ class eths(Device):
             json_object = json.loads(json_string)
         except Exception:
             return {}
-        return json_object
+        # return json_object
+        return {
+            "envtemp": float(json_object["envtemp"]) / 100.0,
+            "envhumid": float(json_object["envhumid"]) / 100.0,
+        }
 
     def check_temperature(self) -> float:
         """Return the temperature."""
@@ -40,6 +44,16 @@ class motion(eths):
     """Controls a LinknLink motion."""
 
     TYPE = "MOTION"
+
+    def check_sensors(self) -> dict:
+        """Return the state of the sensors."""
+        resp = self._send(0x0b01)
+        try:
+            json_string = resp.decode('utf-8')
+            json_object = json.loads(json_string)
+        except Exception:
+            return {}
+        return json_object
 
     def check_pir(self) -> int:
         """Return the pirDetected."""
