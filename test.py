@@ -9,12 +9,12 @@ dev = llk.hello(ip)
 print("device:", dev)
 
 device = llk.gendevice(
-    code_motion,
+    code_ehub,
     dev.host,
     dev.mac,
 )
 
-ee = llk.motion(
+ee = llk.ehub(
     device.host,
     device.mac,
     device.devtype,
@@ -26,4 +26,4 @@ ee = llk.motion(
 )
 print(ee.auth())
 print(ee.check_sensors())
-print(ee.check_pir())
+# print(ee.check_pir())

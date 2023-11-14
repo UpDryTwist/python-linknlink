@@ -11,13 +11,13 @@ from .sensor import motion, eths
 
 SUPPORTED_TYPES = {
     motion: {
-        0xAC7B: ("MOTION", "LinknLink"),
+        0xAC7B: ("eMotion", "LinknLink"),
     },
     eths: {
-        0xAC7C: ("ETHS", "LinknLink"),
+        0xAC7C: ("eTHS", "LinknLink"),
     },
     ehub: {
-        0x520B: ("EHUB", "LinknLink"),
+        0x520B: ("eHub", "LinknLink"),
     },
 }
 

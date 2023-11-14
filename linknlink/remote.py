@@ -8,7 +8,8 @@ class ehub(Device):
     """Controls a LinknLink ehub."""
 
     TYPE = "EHUB"
-        
+    
+    # sensor function
     def _send(self, command: int, data: bytes = b"") -> bytes:
         """Send a packet to the device."""
         packet = struct.pack("<HI", len(data) + 4, command) + data
@@ -38,3 +39,39 @@ class ehub(Device):
     def check_pir(self) -> int:
         """Return the pirDetected."""
         return self.check_sensors()["pirDetected"]
+
+    # remote function
+    def sweep_frequency(self) -> None:
+        """Sweep frequency."""
+        self._send(0x19)
+
+    def check_frequency(self) -> bool:
+        """Return True if the frequency was identified successfully."""
+        resp = self._send(0x1A)
+        return resp[0] == 1
+
+    def find_rf_packet(self) -> None:
+        """Enter radiofrequency learning mode."""
+        self._send(0x1B)
+
+    def cancel_sweep_frequency(self) -> None:
+        """Cancel sweep frequency."""
+        self._send(0x1E)
+
+    def update(self) -> None:
+        """Update device name and lock status."""
+        resp = self._send(0x1)
+        self.name = resp[0x48:].split(b"\x00")[0].decode()
+        self.is_locked = bool(resp[0x87])
+
+    def send_data(self, data: bytes) -> None:
+        """Send a code to the device."""
+        self._send(0x2, data)
+
+    def enter_learning(self) -> None:
+        """Enter infrared learning mode."""
+        self._send(0x3)
+
+    def check_data(self) -> bytes:
+        """Return the last captured code."""
+        return self._send(0x4)
