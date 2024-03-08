@@ -25,7 +25,7 @@ class ehub(Device):
         return {
             "envtemp": resp[0x0] + resp[0x1] / 100.0,
             "envhumid": resp[0x2] + resp[0x3] / 100.0,
-            "pir_detected": resp[0x6],
+            "pir_detected": "on" if resp[0x6] else "off",
         }
 
     def check_temperature(self) -> float:
@@ -36,9 +36,9 @@ class ehub(Device):
         """Return the humidity."""
         return self.check_sensors()["humidity"]
     
-    def check_pir(self) -> int:
+    def check_pir(self) -> str:
         """Return the pirDetected."""
-        return self.check_sensors()["pirDetected"]
+        return self.check_sensors()["pir_detected"]
 
     # remote function
     def sweep_frequency(self) -> None:

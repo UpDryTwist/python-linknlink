@@ -43,7 +43,7 @@ class eths(Device):
 class motion(eths):
     """Controls a LinknLink motion."""
 
-    TYPE = "MOTION"
+    TYPE = "EMOTION"
 
     def check_sensors(self) -> dict:
         """Return the state of the sensors."""
