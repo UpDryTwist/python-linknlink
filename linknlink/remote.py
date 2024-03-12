@@ -25,7 +25,7 @@ class ehub(Device):
         return {
             "envtemp": resp[0x0] + resp[0x1] / 100.0,
             "envhumid": resp[0x2] + resp[0x3] / 100.0,
-            "pir_detected": "on" if resp[0x6] else "off",
+            "pir_detected": resp[0x6],
         }
 
     def check_temperature(self) -> float:
