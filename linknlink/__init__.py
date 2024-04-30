@@ -6,7 +6,7 @@ import typing as t
 from . import exceptions as e
 from .const import DEFAULT_BCAST_ADDR, DEFAULT_PORT, DEFAULT_TIMEOUT
 from .device import Device, scan, ping
-from .remote import ehub
+from .remote import ehub, eremote
 from .sensor import motion, eths
 
 SUPPORTED_TYPES = {
@@ -18,6 +18,9 @@ SUPPORTED_TYPES = {
     },
     ehub: {
         0x520B: ("eHub", "LinknLink"),
+    },
+    eremote: {
+        0xAC99: ("eRemote", "LinknLink"),
     },
 }
 
@@ -45,7 +48,7 @@ def gendevice(
             manufacturer=manufacturer,
             is_locked=is_locked,
         )
-    return Device(host, mac, dev_type, name=name, is_locked=is_locked)
+    return Device(host, mac, dev_type, name=name, model=model, manufacturer=manufacturer, is_locked=is_locked)
 
 
 def hello(

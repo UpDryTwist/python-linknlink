@@ -109,6 +109,7 @@ class Device:
         model: str = "",
         manufacturer: str = "",
         is_locked: bool = False,
+        cb: callable = None,
     ) -> None:
         """Initialize the controller."""
         self.host = host
@@ -124,6 +125,7 @@ class Device:
         self.id = 0
         self.type = self.TYPE  # For backwards compatibility.
         self.lock = threading.Lock()
+        self.cb = cb
 
         self.aes = None
         self.update_aes(bytes.fromhex(self.__INIT_KEY))
@@ -343,6 +345,20 @@ class Device:
         p_checksum = sum(payload, p_checksum) & 0xFFFF
         packet[0x04:0x06] = p_checksum.to_bytes(2, "little")
 
+        return packet
+    
+    def build_cmdstuV2(self, cmd: int, payload: bytes = b"") -> bytes:
+        """Build a command to send."""
+        packet = bytearray(0x0C)
+        packet[0x00:0x04] = bytes.fromhex("a5a55a5a")
+        packet[0x06:0x08] = cmd.to_bytes(2, "little")
+        packet[0x08:0x10] = len(payload).to_bytes(2, "little")
+        packet[0x10:0x12] = [0, 0]
+        if len(payload):
+            packet.extend(payload)
+        p_checksum = sum(packet, 0xBEAF) & 0xFFFF
+        # p_checksum = sum(payload, p_checksum) & 0xFFFF
+        packet[0x04:0x06] = p_checksum.to_bytes(2, "little")
         return packet
 
     def analysis_data(self, payload: bytes):
