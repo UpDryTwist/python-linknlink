@@ -22,7 +22,10 @@ class ehub(Device):
     # sensor function
     def _send(self, command: int, data: bytes = b"") -> bytes:
         """Send a packet to the device."""
-        packet = struct.pack("<HI", len(data) + 4, command) + data
+        if 20000 <= self.devtype <= 29999:
+            packet = struct.pack("<HI", len(data) + 4, command) + data
+        else:
+            packet = struct.pack("<I", command) + data
         resp = self.send_packet(0x6A, packet)
         e.check_error(resp[0x22:0x24])
         payload = self.decrypt(resp[0x38:])
@@ -95,7 +98,10 @@ class eremote(Device):
     
     def _send(self, command: int, data: bytes = b"") -> bytes:
         """Send a packet to the device."""
-        packet = struct.pack("<HI", len(data) + 4, command) + data
+        if 20000 <= self.devtype <= 29999:
+            packet = struct.pack("<HI", len(data) + 4, command) + data
+        else:
+            packet = struct.pack("<I", command) + data
         resp = self.send_packet(0x6A, packet)
         e.check_error(resp[0x22:0x24])
         payload = self.decrypt(resp[0x38:])
@@ -133,8 +139,6 @@ class eremote(Device):
         while True:
             # 接收数据
             data, client_address = udp_server_socket.recvfrom(1024)
-            print(f"收到来自 {client_address} 的消息：{data.decode('utf-8')}")
-
             if self.cb:
                 try:
                     data_dict = json.loads(data.decode('utf-8'))
@@ -153,16 +157,12 @@ class eremote(Device):
         """Send a packet to the device."""
         while True:
             data = (("""{"port":%s, "timeout":60}""") % (self.Port)).encode('utf-8')
-            print(data)
-            print(len(data) + 4)
             packet = struct.pack("<I", 20000) + data
             # packet = struct.pack("<HI", len(data) + 4, 20000) + data
-            print(packet.hex())
             try: 
                 resp = self.send_packet(0x6A, packet)
             except Exception as e:
                 print(e)
-            print(resp.hex())
             time.sleep(60)
     
     def getalldev(self) -> dict:
