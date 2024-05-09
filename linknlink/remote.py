@@ -29,8 +29,10 @@ class ehub(Device):
         resp = self.send_packet(0x6A, packet)
         e.check_error(resp[0x22:0x24])
         payload = self.decrypt(resp[0x38:])
-        p_len = struct.unpack("<H", payload[:0x2])[0]
-        return payload[0x6 : p_len + 2]
+        if 20000 <= self.devtype <= 29999:
+            p_len = struct.unpack("<H", payload[:0x2])[0]
+            return payload[0x6 : p_len + 2]
+        return payload[0x4:]
     
     def check_sensors(self) -> dict:
         """Return the state of the sensors."""
@@ -105,8 +107,10 @@ class eremote(Device):
         resp = self.send_packet(0x6A, packet)
         e.check_error(resp[0x22:0x24])
         payload = self.decrypt(resp[0x38:])
-        p_len = struct.unpack("<H", payload[:0x2])[0]
-        return payload[0x6 : p_len + 2]
+        if 20000 <= self.devtype <= 29999:
+            p_len = struct.unpack("<H", payload[:0x2])[0]
+            return payload[0x6 : p_len + 2]
+        return payload[0x4:]
     
     def _sendV2(self, command: int, data: bytes = b"") -> bytes:
         """Send a packet to the device."""
