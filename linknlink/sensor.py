@@ -58,3 +58,9 @@ class motion(eths):
     def check_pir(self) -> int:
         """Return the pirDetected."""
         return self.check_sensors()["pir_detected"]
+
+
+class motion_max(motion):
+    """Controls a LinknLink motion max."""
+
+    TYPE = "EMOTIONMAX"

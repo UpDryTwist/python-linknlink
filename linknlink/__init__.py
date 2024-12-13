@@ -7,11 +7,14 @@ from . import exceptions as e
 from .const import DEFAULT_BCAST_ADDR, DEFAULT_PORT, DEFAULT_TIMEOUT
 from .device import Device, scan, ping
 from .remote import ehub, eremote
-from .sensor import motion, eths
+from .sensor import motion, motion_max, eths
 
 SUPPORTED_TYPES = {
     motion: {
         0xAC7B: ("eMotion", "LinknLink"),
+    },
+    motion_max: {
+        0xAC9E: ("eMotion Max", "LinknLink"),
     },
     eths: {
         0xAC7C: ("eTHS", "LinknLink"),
@@ -48,7 +51,7 @@ def gendevice(
             manufacturer=manufacturer,
             is_locked=is_locked,
         )
-    return Device(host, mac, dev_type, name=name, model=model, manufacturer=manufacturer, is_locked=is_locked)
+    return Device(host, mac, dev_type, name=name, model="Unknown Model", manufacturer="LinknLink", is_locked=is_locked)
 
 
 def hello(
